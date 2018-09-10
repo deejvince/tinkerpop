@@ -49,6 +49,8 @@ class DriverRemoteConnection extends RemoteConnection {
    * @param {String} [options.traversalSource] The traversal source. Defaults to: 'g'.
    * @param {GraphSONWriter} [options.writer] The writer to use.
    * @param {Authenticator} [options.authenticator] The authentication handler to use.
+   * @param {Authorization} [options.authorization] AWS SIGv4
+   * @param {x-amz-date} [options.amzdate] The signed date
    * @constructor
    */
   constructor(url, options) {
@@ -58,7 +60,11 @@ class DriverRemoteConnection extends RemoteConnection {
       ca: options.ca,
       cert: options.cert,
       pfx: options.pfx,
-      rejectUnauthorized: options.rejectUnauthorized
+      rejectUnauthorized: options.rejectUnauthorized,
+      headers: {
+        Authorization: options.authorization,
+        x-amz-date: options.amzdate
+      }
     });
     this._ws.on('open', () => {
       this.isOpen = true;
